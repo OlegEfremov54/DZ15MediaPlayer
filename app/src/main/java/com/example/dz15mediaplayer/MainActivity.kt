@@ -21,6 +21,7 @@ class MainActivity : AppCompatActivity() {
         R.raw.potomy,
         R.raw.shatunov
     )
+    private var countSound:Int=1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,7 +36,7 @@ class MainActivity : AppCompatActivity() {
         toolbarMain.setLogo(R.drawable.pleer)
 
         //начали
-        pleySaund(songList[2])
+        pleySaund(songList[countSound])
 
     }
 
@@ -46,6 +47,10 @@ class MainActivity : AppCompatActivity() {
                 initializeSeekBar()
             }
             mediaPlayer?.start()
+            Toast.makeText(
+                applicationContext, "Выбрана мелодия ${countSound} идет Воспроизведение",
+                Toast.LENGTH_LONG
+            ).show()
         }
         binding.pauseButtonFAB.setOnClickListener {
             if (mediaPlayer != null) {
@@ -60,6 +65,36 @@ class MainActivity : AppCompatActivity() {
                 mediaPlayer = null
             }
         }
+        binding.forwardButtonFAB.setOnClickListener{
+            if (mediaPlayer != null) {
+                countSound=countSound+1
+                if (countSound>songList.size)countSound=(songList.size-1)
+                mediaPlayer?.stop()
+                mediaPlayer?.reset()
+                mediaPlayer?.release()
+                mediaPlayer = null
+                Toast.makeText(
+                    applicationContext, "Выбрана мелодия ${countSound}, нажмите Воспроизведение",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+        }
+
+        binding.backButtonFAB.setOnClickListener(){
+            if (mediaPlayer != null) {
+                countSound=countSound-1
+                if (countSound<0)countSound=0
+                mediaPlayer?.stop()
+                mediaPlayer?.reset()
+                mediaPlayer?.release()
+                mediaPlayer = null
+                Toast.makeText(
+                    applicationContext, "Выбрана мелодия ${countSound}, нажмите Воспроизведение",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+        }
+
         binding.seekbarSB.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                if (fromUser)mediaPlayer?.seekTo(progress)
