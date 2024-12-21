@@ -36,6 +36,21 @@ class MainActivity : AppCompatActivity() {
         toolbarMain.setLogo(R.drawable.pleer)
 
         //начали
+
+        binding.forwardButtonFAB.setOnClickListener {
+            if (mediaPlayer != null) {
+                countSound = (countSound + 1) % songList.size // Циклический переход вперед
+                switchSound()
+            }
+        }
+
+        binding.backButtonFAB.setOnClickListener {
+            if (mediaPlayer != null) {
+                countSound = if (countSound - 1 < 0) songList.size - 1 else countSound - 1 // Циклический переход назад
+                switchSound()
+            }
+        }
+
         pleySaund(songList[countSound])
 
     }
@@ -48,14 +63,13 @@ class MainActivity : AppCompatActivity() {
             }
             mediaPlayer?.start()
             Toast.makeText(
-                applicationContext, "Выбрана мелодия ${countSound} идет Воспроизведение",
+                applicationContext,
+                "Выбрана мелодия ${countSound}, идет воспроизведение",
                 Toast.LENGTH_LONG
             ).show()
         }
         binding.pauseButtonFAB.setOnClickListener {
-            if (mediaPlayer != null) {
-                mediaPlayer?.pause()
-            }
+            mediaPlayer?.pause()
         }
         binding.stopButtonFAB.setOnClickListener {
             if (mediaPlayer != null) {
@@ -63,35 +77,6 @@ class MainActivity : AppCompatActivity() {
                 mediaPlayer?.reset()
                 mediaPlayer?.release()
                 mediaPlayer = null
-            }
-        }
-        binding.forwardButtonFAB.setOnClickListener{
-            if (mediaPlayer != null) {
-                countSound=countSound+1
-                if (countSound>songList.size)countSound=(songList.size-1)
-                mediaPlayer?.stop()
-                mediaPlayer?.reset()
-                mediaPlayer?.release()
-                mediaPlayer = null
-                Toast.makeText(
-                    applicationContext, "Выбрана мелодия ${countSound}, нажмите Воспроизведение",
-                    Toast.LENGTH_LONG
-                ).show()
-            }
-        }
-
-        binding.backButtonFAB.setOnClickListener(){
-            if (mediaPlayer != null) {
-                countSound=countSound-1
-                if (countSound<0)countSound=0
-                mediaPlayer?.stop()
-                mediaPlayer?.reset()
-                mediaPlayer?.release()
-                mediaPlayer = null
-                Toast.makeText(
-                    applicationContext, "Выбрана мелодия ${countSound}, нажмите Воспроизведение",
-                    Toast.LENGTH_LONG
-                ).show()
             }
         }
 
@@ -108,6 +93,20 @@ class MainActivity : AppCompatActivity() {
 
 
         })
+    }
+
+    private fun switchSound() {
+        mediaPlayer?.stop()
+        mediaPlayer?.reset()
+        mediaPlayer?.release()
+        mediaPlayer = null
+
+        pleySaund(songList[countSound])
+        Toast.makeText(
+            applicationContext,
+            "Выбрана мелодия ${countSound}, нажмите Воспроизведение",
+            Toast.LENGTH_LONG
+        ).show()
     }
 
     private fun initializeSeekBar() {
